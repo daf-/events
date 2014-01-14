@@ -1,16 +1,15 @@
 Events = new Meteor.Collection('Events');
 
 if (Meteor.isClient) {
-  Template.events.allEvents = function () {
-    return Events.find();
-  };
-
-
   /*
    * addEvent template functions
    */
   Template.addEvent.rendered = function () {
-    $(".datepicker").datepicker();
+    $('#datetimepicker').datetimepicker({
+      language: "en",
+      pick12HourFormat: true,
+      pickSeconds: false
+    });
   };
 
   Template.addEvent.userId = function () {
@@ -22,7 +21,7 @@ if (Meteor.isClient) {
       var title = templ.find("#eventTitle").value;
       var loc = templ.find("#eventLocation").value;
       var desc = templ.find("#eventDescription").value;
-      var date = templ.find("#eventDate").value;
+      var date = Date(templ.find("#eventDate").value);
       Events.insert({
         title: title,
         loc: loc,
@@ -32,6 +31,20 @@ if (Meteor.isClient) {
       });
     }
   });
+
+
+  /*
+   * events template functions
+   */
+  Template.events.allEvents = function () {
+    return Events.find({}, {
+      sort: {date: 1}           // sort by increasing date
+    });
+  };
+
+  Template.events.niceDate = function () {
+    return moment(this.date).format('dddd, MMM Do');
+  };
 
   Template.events.events({
     "click .event": function (evt, templ) {

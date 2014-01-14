@@ -10,3 +10,5 @@ preserve-inputs
 bootstrap
 accounts-password
 accounts-ui
+bootstrap-datetimepicker
+moment
