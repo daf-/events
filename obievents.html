@@ -3,11 +3,36 @@
 </head>
 
 <body>
-  {{> hello}}
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <!-- Sidebar content (form, about) -->
+      <div class="eventForm span3">
+        <h3>ADD AN EVENT</h3>
+        {{> addEvent}}
+      </div>
+      <!-- Events list -->
+      <div class="events span9">
+        <h3>EVENTS</h3>
+        <!-- Fill in events here -->
+      </div>
+    </div>
+  </div>
 </body>
 
-<template name="hello">
-  <h1>Hello World!</h1>
-  {{greeting}}
-  <input type="button" value="Click" />
+<template name="addEvent">
+  <form role="form">
+    <div class="form-group">
+      <label for="eventTitle">Title</label>
+      <input type="text" class="form-control" id="eventTitle" placeholder="Name your event">
+    </div>
+    <div class="form-group">
+      <label for="eventLocation">Location</label>
+      <input type="text" class="form-control" id="eventLocation" placeholder="Where is it happening?">
+    </div>
+    <div class="form-group">
+      <label for="eventText">Description</label>
+      <textarea class="form-control" id="eventText" placeholder="Give a brief description" />
+    </div>
+    <button type="submit" class="btn">Submit</button>
+  </form>
 </template>
