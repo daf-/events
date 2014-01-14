@@ -5,6 +5,14 @@ if (Meteor.isClient) {
     return Events.find();
   };
 
+
+  /*
+   * addEvent template functions
+   */
+  Template.addEvent.rendered = function () {
+    $(".datepicker").datepicker();
+  };
+
   Template.addEvent.userId = function () {
     return Meteor.userId();
   };
@@ -14,10 +22,12 @@ if (Meteor.isClient) {
       var title = templ.find("#eventTitle").value;
       var loc = templ.find("#eventLocation").value;
       var desc = templ.find("#eventDescription").value;
+      var date = templ.find("#eventDate").value;
       Events.insert({
         title: title,
         loc: loc,
         desc: desc,
+        date: date,
         owner: Meteor.userId()
       });
     }
