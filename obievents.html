@@ -37,8 +37,8 @@
 <template name="events">
   {{#each allEvents}}
   <div class="event row">
-    <strong>{{title}} @ {{loc}}:</strong>
-    <p>{{desc}}</p>
+    <p class="title"><strong>{{title}} @ {{loc}}</strong></p>
+    <p class="description">{{desc}}</p>
   </div>
   {{/each}}
 </template>

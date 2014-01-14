@@ -1,1 +1,16 @@
 /* CSS declarations go here */
+
+.event {
+  border: 1px solid lightgrey;
+  padding: 8px;
+  overflow: auto;
+}
+
+.event .description {
+  display: none;
+}
+
+.event:hover {
+  cursor: pointer;
+  background-color: #EEEEEE;
+}

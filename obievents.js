@@ -13,4 +13,10 @@ if (Meteor.isClient) {
       Events.insert({title: title, loc: loc, desc: desc});
     }
   });
+
+  Template.events.events({
+    "click .event": function (evt, templ) {
+      $(evt.currentTarget).find(".description").slideToggle("fast");
+    }
+  });
 }
