@@ -5,12 +5,21 @@ if (Meteor.isClient) {
     return Events.find();
   };
 
+  Template.addEvent.userId = function () {
+    return Meteor.userId();
+  };
+
   Template.addEvent.events({
     "click #submitEvent": function (evt, templ) {
       var title = templ.find("#eventTitle").value;
       var loc = templ.find("#eventLocation").value;
       var desc = templ.find("#eventDescription").value;
-      Events.insert({title: title, loc: loc, desc: desc});
+      Events.insert({
+        title: title,
+        loc: loc,
+        desc: desc,
+        owner: Meteor.userId()
+      });
     }
   });
 

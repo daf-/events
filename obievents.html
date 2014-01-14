@@ -8,6 +8,7 @@
       <!-- Sidebar content (form, about) -->
       <div class="eventForm span3">
         <div class="row">
+          {{loginButtons}}
           <h3>ADD AN EVENT</h3>
           {{> addEvent}}
         </div>
@@ -44,6 +45,7 @@
 </template>
 
 <template name="addEvent">
+  {{#if userId}}
   <form role="form">
     <div class="form-group">
       <label for="eventTitle">Title</label>
@@ -59,4 +61,5 @@
     </div>
     <button type="submit" class="btn" id="submitEvent">Submit</button>
   </form>
+  {{/if}}
 </template>
