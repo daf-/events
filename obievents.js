@@ -1,19 +1,16 @@
+Events = new Meteor.Collection('Events');
+
 if (Meteor.isClient) {
-  Template.hello.greeting = function () {
-    return "Welcome to obievents.";
+  Template.events.allEvents = function () {
+    return Events.find();
   };
 
-  Template.hello.events({
-    'click input' : function () {
-      // template data, if any, is available in 'this'
-      if (typeof console !== 'undefined')
-        console.log("You pressed the button");
+  Template.addEvent.events({
+    "click #submitEvent": function (evt, templ) {
+      var title = templ.find("#eventTitle").value;
+      var loc = templ.find("#eventLocation").value;
+      var desc = templ.find("#eventDescription").value;
+      Events.insert({title: title, loc: loc, desc: desc});
     }
-  });
-}
-
-if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // code to run on server at startup
   });
 }

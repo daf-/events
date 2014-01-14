@@ -3,21 +3,45 @@
 </head>
 
 <body>
-  <div class="container-fluid">
-    <div class="row-fluid">
+  <div class="container">
+    <div class="row">
       <!-- Sidebar content (form, about) -->
       <div class="eventForm span3">
-        <h3>ADD AN EVENT</h3>
-        {{> addEvent}}
+        <div class="row">
+          <h3>ADD AN EVENT</h3>
+          {{> addEvent}}
+        </div>
+        <div class="row">
+          <h3>ABOUT</h3>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+            do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco
+            laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+            irure dolor in reprehenderit in voluptate velit esse cillum
+            dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+            cupidatat non proident, sunt in culpa qui officia deserunt
+            mollit anim id est laborum.
+          </p>
+        </div>
       </div>
       <!-- Events list -->
       <div class="events span9">
-        <h3>EVENTS</h3>
-        <!-- Fill in events here -->
+        <div class="row"><h3>EVENTS</h3></div>
+        {{> events}}
       </div>
     </div>
   </div>
 </body>
+
+<template name="events">
+  {{#each allEvents}}
+  <div class="event row">
+    <strong>{{title}} @ {{loc}}:</strong>
+    <p>{{desc}}</p>
+  </div>
+  {{/each}}
+</template>
 
 <template name="addEvent">
   <form role="form">
@@ -30,9 +54,9 @@
       <input type="text" class="form-control" id="eventLocation" placeholder="Where is it happening?">
     </div>
     <div class="form-group">
-      <label for="eventText">Description</label>
-      <textarea class="form-control" id="eventText" placeholder="Give a brief description" />
+      <label for="eventDescription">Description</label>
+      <textarea class="form-control" id="eventDescription" placeholder="Give a brief description" />
     </div>
-    <button type="submit" class="btn">Submit</button>
+    <button type="submit" class="btn" id="submitEvent">Submit</button>
   </form>
 </template>
