@@ -57,3 +57,29 @@ if (Meteor.isClient) {
     }
   });
 }
+
+
+
+
+if (Meteor.isServer) {
+  Events.allow({
+    "insert": function (userId, doc) {
+      return (userId && doc.title && doc.loc && doc.date);
+    },
+
+    "update": function (userId, doc, fields, modifier) {
+      return (userId && doc.owner === userId);
+    },
+
+    "remove": function (userId, doc) {
+      return (userId && doc.owner === userId);
+    }
+  });
+
+  Events.deny({
+    update: function (userId, docs, fields, modifier) {
+      // Can't change owner or id
+      return (_.contains(fields, 'owner') || _.contains(fields, '_id'));
+    }
+  });
+}
