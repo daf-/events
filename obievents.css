@@ -1,5 +1,10 @@
 /* CSS declarations go here */
 
+.container {
+  max-width: 800px;
+}
+
+/* Event stuff */
 .event-container .description {
   display: none;
 }
@@ -9,7 +14,10 @@
   background-color: #EEEEEE;
 }
 
-.container {
-  margin: auto;
-  max-width: 800px;
+/* Form stuff */
+#form-container {
+  display: none;
+}
+textarea {
+  max-width: 100%;
 }

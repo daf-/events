@@ -8,10 +8,7 @@
       <!-- Add events (top row) -->
       <div class="row">
         {{loginButtons}}
-        <h3>ADD AN EVENT</h3>
-        <div class="well">
-          {{> addEvent}}
-        </div>
+        {{> addEvent}}
       </div>
       <!-- Events list (middle row) -->
       <div class="row">
@@ -35,31 +32,55 @@
 
 <template name="addEvent">
   {{#if userId}}
-  <form role="form">
-    <div class="form-group">
-      <label for="eventTitle">Title</label>
-      <input type="text" class="form-control" id="eventTitle" placeholder="What?">
+  <a href="#" id="event-form-toggler"><h3>ADD AN EVENT</h3></a>
+  <div class="well" id="form-container">
+    <div class="row">
+      <form class="form-horizontal">
+
+        <div class="control-group">
+          <label class="control-label" for="eventTitle">Title</label>
+          <div class="controls">
+            <input type="text" id="eventTitle" placeholder="What?">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="eventLocation">Location</label>
+          <div class="controls">
+            <input type="text" id="eventLocation" placeholder="Where?">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="eventDate">Date</label>
+          <div class="controls">
+            <div id="datetimepicker" class="input-append">
+              <input id="eventDate" data-format="MM/dd/yyyy HH:mm:ss PP" type="text" placeholder="When?">
+              <span class="add-on">
+                <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                </i>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label" for="eventDescription">Details</label>
+          <div class="controls">
+            <div class="textarea-container">
+              <textarea class="row-fluid" id="eventDescription" placeholder="Give a brief description" />
+            </div>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="controls">
+            <button type="submit" class="btn" id="submitEvent">Submit</button>
+          </div>
+        </div>
+      </form>
     </div>
-    <div class="form-group">
-      <label for="eventLocation">Location</label>
-      <input type="text" class="form-control" id="eventLocation" placeholder="Where?">
-    </div>
-    <div class="form-group">
-      <label for="eventDate">Date/Time</label>
-      <div id="datetimepicker" class="input-append">
-        <input id="eventDate" data-format="MM/dd/yyyy HH:mm:ss PP" type="text" placeholder="When?">
-        <span class="add-on">
-          <i data-time-icon="icon-time" data-date-icon="icon-calendar">
-          </i>
-        </span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="eventDescription">Description</label>
-      <textarea class="form-control" id="eventDescription" placeholder="Give a brief description" />
-    </div>
-    <button type="submit" class="btn" id="submitEvent">Submit</button>
-  </form>
+  </div>
   {{else}}
   <p>
     You must be signed in to post an event.

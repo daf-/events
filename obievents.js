@@ -17,6 +17,10 @@ if (Meteor.isClient) {
   };
 
   Template.addEvent.events({
+    "click #event-form-toggler" : function (evt, templ) {
+      $("#form-container").slideToggle();
+    },
+
     "click #submitEvent": function (evt, templ) {
       var title = templ.find("#eventTitle").value;
       var loc = templ.find("#eventLocation").value;
@@ -29,6 +33,7 @@ if (Meteor.isClient) {
         date: date,
         owner: Meteor.userId()
       });
+      $("#form-container").slideToggle();
     }
   });
 
@@ -48,7 +53,7 @@ if (Meteor.isClient) {
 
   Template.events.events({
     "click .event-container": function (evt, templ) {
-      $(evt.currentTarget).find(".description").slideToggle("fast");
+      $(evt.currentTarget).find(".description").toggle();
     }
   });
 }
