@@ -1,17 +1,37 @@
 /* CSS declarations go here */
 
+h3 {
+  text-align: center;
+}
+
 .container {
   max-width: 800px;
 }
 
 /* Event stuff */
+.event-container {
+  padding: 4px;
+  margin-top: 8px;
+  background-color: #DDD;
+  overflow: auto;
+}
+
+.event-container .title {
+  float: left;
+}
+
+.event-container .date {
+  float: right;
+}
+
 .event-container .description {
+  clear: both;
   display: none;
 }
 
 .event-container:hover {
   cursor: pointer;
-  background-color: #EEEEEE;
+  background-color: #EEE;
 }
 
 /* Form stuff */

@@ -24,8 +24,11 @@
 <template name="events">
   {{#each allEvents}}
   <div class="event-container">
-    <p class="title"><strong>{{niceDate}}: {{title}} @ {{loc}}</strong></p>
-    <p class="description">{{desc}}</p>
+    <span class="title"><strong>{{title}} @ {{loc}}</strong></span>
+    <span class="date"><em>{{niceDate}}</em></span>
+    <div class="description">
+      {{desc}}
+    </div>
   </div>
   {{/each}}
 </template>

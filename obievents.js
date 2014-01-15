@@ -25,7 +25,7 @@ if (Meteor.isClient) {
       var title = templ.find("#eventTitle").value;
       var loc = templ.find("#eventLocation").value;
       var desc = templ.find("#eventDescription").value;
-      var date = Date(templ.find("#eventDate").value);
+      var date = Date.parse(templ.find("#eventDate").value);
       Events.insert({
         title: title,
         loc: loc,
