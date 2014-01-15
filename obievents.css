@@ -1,10 +1,15 @@
 /* CSS declarations go here */
 
-.event .description {
+.event-container .description {
   display: none;
 }
 
-.event:hover {
+.event-container:hover {
   cursor: pointer;
   background-color: #EEEEEE;
+}
+
+.container {
+  margin: auto;
+  max-width: 800px;
 }

@@ -47,7 +47,7 @@ if (Meteor.isClient) {
   };
 
   Template.events.events({
-    "click .event": function (evt, templ) {
+    "click .event-container": function (evt, templ) {
       $(evt.currentTarget).find(".description").slideToggle("fast");
     }
   });

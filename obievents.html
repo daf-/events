@@ -5,30 +5,19 @@
 <body>
   <div class="container">
     <div class="row">
-      <!-- Sidebar content (form, about) -->
-      <div class="eventForm span3">
-        <div class="row">
-          {{loginButtons}}
-          <h3>ADD AN EVENT</h3>
+      <!-- Add events (top row) -->
+      <div class="row">
+        {{loginButtons}}
+        <h3>ADD AN EVENT</h3>
+        <div class="well">
           {{> addEvent}}
         </div>
-        <div class="row">
-          <h3>ABOUT</h3>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-            do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco
-            laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-            irure dolor in reprehenderit in voluptate velit esse cillum
-            dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-            cupidatat non proident, sunt in culpa qui officia deserunt
-            mollit anim id est laborum.
-          </p>
-        </div>
       </div>
-      <!-- Events list -->
-      <div class="events span9">
-        <div class="row"><h3>EVENTS</h3></div>
+      <!-- Events list (middle row) -->
+      <div class="row">
+        <h3>EVENTS</h3>
+      </div>
+      <div class="row">
         {{> events}}
       </div>
     </div>
@@ -37,7 +26,7 @@
 
 <template name="events">
   {{#each allEvents}}
-  <div class="event row well">
+  <div class="event-container">
     <p class="title"><strong>{{niceDate}}: {{title}} @ {{loc}}</strong></p>
     <p class="description">{{desc}}</p>
   </div>
@@ -71,5 +60,9 @@
     </div>
     <button type="submit" class="btn" id="submitEvent">Submit</button>
   </form>
+  {{else}}
+  <p>
+    You must be signed in to post an event.
+  </p>
   {{/if}}
 </template>
