@@ -87,7 +87,9 @@
         <div class="span10"><strong>{{title}} @ {{loc}}</strong></div>
         <div class="span2"><em>{{niceDate}}</em></div>
       </div>
-      <div class="description row-fluid">{{desc}}</div>
+      {{#if desc}}
+      <div class="description row-fluid"><br />{{desc}}</div>
+      {{/if}}
       {{#if amOwner}}
       <div class="edit-form-container row-fluid">
         <a href="#" class="edit-link">Edit</a>
