@@ -2,26 +2,34 @@ Events = new Meteor.Collection('Events');
 
 if (Meteor.isClient) {
   /*
-   * addEvent template functions
+   * page template functions
    */
-  Template.addEvent.rendered = function () {
-    $('#datetimepicker').datetimepicker({
+  Template.page.helpers({
+    userId: function() {
+      return Meteor.userId();
+    }
+  });
+
+  Template.page.events({
+    "click #event-form-toggler": function (evt, templ) {
+      $(evt.currentTarget).siblings(".form-container").slideToggle();
+    }
+  });
+
+
+  /*
+   * eventForm template functions
+   */
+  Template.eventForm.rendered = function () {
+    $('.datetimepicker').datetimepicker({
       language: "en",
       pick12HourFormat: true,
       pickSeconds: false
     });
   };
 
-  Template.addEvent.userId = function () {
-    return Meteor.userId();
-  };
-
-  Template.addEvent.events({
-    "click #event-form-toggler" : function (evt, templ) {
-      $("#form-container").slideToggle();
-    },
-
-    "click #submitEvent": function (evt, templ) {
+  Template.eventForm.events({
+    "click .submit": function (evt, templ) {
       var title = templ.find("#eventTitle").value;
       var loc = templ.find("#eventLocation").value;
       var desc = templ.find("#eventDescription").value;
@@ -33,31 +41,82 @@ if (Meteor.isClient) {
         date: date,
         owner: Meteor.userId()
       });
-      $("#form-container").slideToggle();
+      $(evt.currentTarget).closest(".form-container").slideToggle();
+      $(evt.currentTarget).closest(".event-form")[0].reset();
+    },
+
+    "click .update": function (evt, templ) {
+      var title = templ.find("#eventTitle").value;
+      var loc = templ.find("#eventLocation").value;
+      var desc = templ.find("#eventDescription").value;
+      var date = Date.parse(templ.find("#eventDate").value);
+
+      var that = this;
+      Events.update({_id: that._id}, {
+        $set: {
+          title: title,
+          loc: loc,
+          desc: desc,
+          date: date,
+        }
+      });
+      $(evt.currentTarget).closest(".form-container").slideToggle();
+      $(evt.currentTarget).closest(".event-form")[0].reset();
+    },
+
+    "click .cancel": function (evt, templ) {
+      $(evt.currentTarget).closest(".form-container").slideToggle();
+      $(evt.currentTarget).closest(".event-form")[0].reset();
     }
   });
+
 
 
   /*
    * events template functions
    */
-  Template.events.allEvents = function () {
-    return Events.find({}, {
-      sort: {date: 1}           // sort by increasing date
-    });
-  };
+  Template.events.helpers({
+    allEvents: function () {
+      return Events.find({}, {
+        sort: {date: 1}         // sort by increasing date
+      });
+    },
 
-  Template.events.amOwner = function () {
-    return (Meteor.userId && Meteor.userId() === this.owner);
-  };
+    amOwner: function () {
+      return (Meteor.userId && Meteor.userId() === this.owner);
+    },
 
-  Template.events.niceDate = function () {
-    return moment(this.date).format('dddd, MMM Do');
-  };
+    niceDate: function () {
+      return moment(this.date).format('dddd, MMM Do');
+    }
+  });
 
   Template.events.events({
     "click .event-container .title": function (evt, templ) {
       $(evt.currentTarget).siblings(".description").slideToggle("fast");
+    },
+
+    "click .event-container .edit-link": function (evt, templ) {
+      // If the template hasn't yet been rendered, render it.
+      // Otherwise just toggle the template and event description.
+      var curDoc = this;
+      var formContainerNode = $(evt.currentTarget).parent().siblings(".edit-form-container");
+      if (formContainerNode.find(".form-container").length === 0) {
+        var fragment = Meteor.render(function () {
+          // need to parse date for datetimepicker.js
+          var dateParsed = moment(new Date(curDoc.date)).format("MM/DD/YYYY hh:mm:ss A");
+          return Template.eventForm({update: true, title: curDoc.title, loc: curDoc.loc, date: dateParsed, desc: curDoc.desc, _id: curDoc._id});
+        });
+        formContainerNode.html(fragment);
+        formContainerNode.find(".form-container").slideToggle();
+      } else {
+        formContainerNode.find(".form-container").slideToggle();
+      }
+    },
+
+    "click .event-container .remove-link": function (evt, templ) {
+      var id = this._id;
+      Events.remove({_id: id});
     }
   });
 }

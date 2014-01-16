@@ -3,13 +3,22 @@
 </head>
 
 <body>
+  {{> page}}
+</body>
+
+<template name="page">
   <div class="row-fluid"> <!-- outermost row -->
     <div class="span10 offset1"> <!-- page container column -->
       <div class="row-fluid">
         {{loginButtons}}
       </div>
       <div class="row-fluid">
-        {{> addEvent}}
+        {{#if userId}}
+        <a href="#$" id="event-form-toggler"><h3>ADD AN EVENT</h3></a>
+        {{> eventForm}}
+        {{else}}
+        <p>You must be signed in to post an event.</p>
+        {{/if}}
       </div>
       <div class="row-fluid">
         <h3>EVENTS</h3>
@@ -17,34 +26,32 @@
       {{> events}}
     </div> <!-- end page container column -->
   </div> <!-- end outermost row -->
-</body>
+</template>
 
 
-<template name="addEvent">
-  {{#if userId}}
-  <a href="#" id="event-form-toggler"><h3>ADD AN EVENT</h3></a>
-  <div class="well" id="form-container">
-    <form class="form-horizontal">
+<template name="eventForm">
+  <div class="form-container well">
+    <form class="event-form form-horizontal">
 
       <div class="control-group">
         <label class="control-label" for="eventTitle">Title</label>
         <div class="controls">
-          <input type="text" id="eventTitle" placeholder="What?">
+          <input type="text" id="eventTitle" placeholder="What?" value="{{title}}">
         </div>
       </div>
 
       <div class="control-group">
         <label class="control-label" for="eventLocation">Location</label>
         <div class="controls">
-          <input type="text" id="eventLocation" placeholder="Where?">
+          <input type="text" id="eventLocation" placeholder="Where?" value="{{loc}}">
         </div>
       </div>
 
       <div class="control-group">
         <label class="control-label" for="eventDate">Date</label>
         <div class="controls">
-          <div id="datetimepicker" class="input-append">
-            <input id="eventDate" data-format="MM/dd/yyyy HH:mm:ss PP" type="text" placeholder="When?">
+          <div class="datetimepicker input-append">
+            <input id="eventDate" data-format="MM/dd/yyyy HH:mm:ss PP" type="text" placeholder="When?" value="{{date}}">
             <span class="add-on">
               <i data-time-icon="icon-time" data-date-icon="icon-calendar">
               </i>
@@ -57,23 +64,23 @@
         <label class="control-label" for="eventDescription">Details</label>
         <div class="controls">
           <div class="textarea-container">
-            <textarea class="row-fluid" id="eventDescription" placeholder="Give a brief description" />
+            <textarea class="row-fluid" id="eventDescription" placeholder="Give a brief description">{{desc}}</textarea>
           </div>
         </div>
       </div>
 
       <div class="control-group">
         <div class="controls">
-          <button type="submit" class="btn" id="submitEvent">Submit</button>
+          {{#if update}}
+          <button type="submit" class="update btn btn-primary">Update</button>
+          {{else}}
+          <button type="submit" class="submit btn btn-primary">Submit</button>
+          {{/if}}
+          <button type="cancel" class="cancel btn">Cancel</button>
         </div>
       </div>
     </form>
   </div>
-  {{else}}
-  <p>
-    You must be signed in to post an event.
-  </p>
-  {{/if}}
 </template>
 
 
@@ -88,13 +95,14 @@
         <div class="span2"><em>{{niceDate}}</em></div>
       </div>
       {{#if desc}}
-      <div class="description row-fluid"><br />{{desc}}</div>
+      <div class="description row-fluid"><p>{{desc}}</p></div>
       {{/if}}
       {{#if amOwner}}
-      <div class="edit-form-container row-fluid">
-        <a href="#" class="edit-link">Edit</a>
-        <a href="#" class="remove-link">Remove</a>
+      <div class="event-links row-fluid">
+        <a href="#$" class="edit-link">Edit</a>
+        <a href="#$" class="remove-link">Remove</a>
       </div>
+      <div class="edit-form-container row-fluid"></div>
       {{/if}}
     </div> <!-- end container column -->
   </div>

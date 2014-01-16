@@ -8,27 +8,20 @@
   overflow: auto;
 
   .title {
-    float: left;
-
     &:hover {
       cursor: pointer;
       background-color: #EEE;
     }
   }
 
-  .date {
-    float: right;
-  }
-
   .description {
-    clear: both;
     display: none;
+    white-space: pre-wrap;      /* Display user's formatting */
   }
-
 }
 
 /* Form stuff */
-#form-container {
+.form-container {
   display: none;
 }
 

@@ -5,19 +5,16 @@
   margin-top: 8px;
   background-color: #DDD;
   overflow: auto; }
-  .event-container .title {
-    float: left; }
-    .event-container .title:hover {
-      cursor: pointer;
-      background-color: #EEE; }
-  .event-container .date {
-    float: right; }
+  .event-container .title:hover {
+    cursor: pointer;
+    background-color: #EEE; }
   .event-container .description {
-    clear: both;
-    display: none; }
+    display: none;
+    white-space: pre-wrap;
+    /* Display user's formatting */ }
 
 /* Form stuff */
-#form-container {
+.form-container {
   display: none; }
 
 textarea {
