@@ -1,44 +1,24 @@
 /* CSS declarations go here */
-
-h3 {
-  text-align: center;
-}
-
-.container {
-  max-width: 800px;
-}
-
 /* Event stuff */
 .event-container {
   padding: 4px;
   margin-top: 8px;
   background-color: #DDD;
-  overflow: auto;
-}
-
-.event-container .title {
-  float: left;
-}
-
-.event-container .date {
-  float: right;
-}
-
-.event-container .description {
-  clear: both;
-  display: none;
-}
-
-.event-container:hover {
-  cursor: pointer;
-  background-color: #EEE;
-}
+  overflow: auto; }
+  .event-container .title {
+    float: left; }
+    .event-container .title:hover {
+      cursor: pointer;
+      background-color: #EEE; }
+  .event-container .date {
+    float: right; }
+  .event-container .description {
+    clear: both;
+    display: none; }
 
 /* Form stuff */
 #form-container {
-  display: none;
-}
+  display: none; }
 
 textarea {
-  max-width: 100%;
-}
+  max-width: 100%; }

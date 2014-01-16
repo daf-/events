@@ -1,0 +1,37 @@
+/* CSS declarations go here */
+
+/* Event stuff */
+.event-container {
+  padding: 4px;
+  margin-top: 8px;
+  background-color: #DDD;
+  overflow: auto;
+
+  .title {
+    float: left;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #EEE;
+    }
+  }
+
+  .date {
+    float: right;
+  }
+
+  .description {
+    clear: both;
+    display: none;
+  }
+
+}
+
+/* Form stuff */
+#form-container {
+  display: none;
+}
+
+textarea {
+  max-width: 100%;
+}
