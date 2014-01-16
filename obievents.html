@@ -88,9 +88,12 @@
         <div class="span2"><em>{{niceDate}}</em></div>
       </div>
       <div class="description row-fluid">{{desc}}</div>
+      {{#if amOwner}}
       <div class="edit-form-container row-fluid">
         <a href="#" class="edit-link">Edit</a>
+        <a href="#" class="remove-link">Remove</a>
       </div>
+      {{/if}}
     </div> <!-- end container column -->
   </div>
   {{/each}}

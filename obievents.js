@@ -47,6 +47,10 @@ if (Meteor.isClient) {
     });
   };
 
+  Template.events.amOwner = function () {
+    return (Meteor.userId && Meteor.userId() === this.owner);
+  };
+
   Template.events.niceDate = function () {
     return moment(this.date).format('dddd, MMM Do');
   };
