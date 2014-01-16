@@ -3,11 +3,10 @@
 .event-container {
   padding: 4px;
   margin-top: 8px;
-  background-color: #DDD;
+  border: 2px solid orange;
   overflow: auto; }
   .event-container .title:hover {
-    cursor: pointer;
-    background-color: #EEE; }
+    cursor: pointer; }
   .event-container .description {
     display: none;
     white-space: pre-wrap;

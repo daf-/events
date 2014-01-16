@@ -4,13 +4,12 @@
 .event-container {
   padding: 4px;
   margin-top: 8px;
-  background-color: #DDD;
+  border: 2px solid orange;
   overflow: auto;
 
   .title {
     &:hover {
       cursor: pointer;
-      background-color: #EEE;
     }
   }
 
