@@ -14,7 +14,7 @@
       </div>
       <div class="row-fluid">
         {{#if userId}}
-        <a href="#$" id="event-form-toggler"><h3>ADD AN EVENT</h3></a>
+        <a id="event-form-toggler"><h3>ADD AN EVENT</h3></a>
         {{> eventForm}}
         {{else}}
         <p>You must be signed in to post an event.</p>
@@ -99,8 +99,8 @@
       {{/if}}
       {{#if amOwner}}
       <div class="event-links row-fluid">
-        <a href="#$" class="edit-link">Edit</a>
-        <a href="#$" class="remove-link">Remove</a>
+        <a class="edit-link">Edit</a>
+        <a class="remove-link">Remove</a>
       </div>
       <div class="edit-form-container row-fluid"></div>
       {{/if}}
