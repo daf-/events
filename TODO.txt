@@ -1,0 +1,14 @@
+[Features]
+- Only show events happening on/after today.
+- Let user 'join' events.
+- Show how many attendees each event has.
+- Optionally sort by:
+  - Number of attendees.
+  - My events.
+
+  [Email integration]
+  - Email reminders.
+  - Invite a friend via email (privately).
+
+[Design]
+- Orange?
