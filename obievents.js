@@ -57,7 +57,7 @@ if (Meteor.isClient) {
           title: title,
           loc: loc,
           desc: desc,
-          date: date,
+          date: date
         }
       });
       $(evt.currentTarget).closest(".form-container").slideToggle();
