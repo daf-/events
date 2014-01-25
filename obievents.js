@@ -1,5 +1,9 @@
 Events = new Meteor.Collection('Events');
 
+Events.before.insert(function (userId, doc) {
+  doc.owner = userId;
+});
+
 if (Meteor.isClient) {
   /*
    * page template functions
@@ -38,8 +42,7 @@ if (Meteor.isClient) {
         title: title,
         loc: loc,
         desc: desc,
-        date: date,
-        owner: Meteor.userId()
+        date: date
       });
       $(evt.currentTarget).closest(".form-container").slideToggle();
       $(evt.currentTarget).closest(".event-form")[0].reset();
@@ -52,8 +55,8 @@ if (Meteor.isClient) {
       var desc = templ.find("#eventDescription").value;
       var date = Date.parse(templ.find("#eventDate").value);
 
-      var that = this;
-      Events.update({_id: that._id}, {
+      var id = this._id;
+      Events.update({_id: id}, {
         $set: {
           title: title,
           loc: loc,

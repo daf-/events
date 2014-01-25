@@ -28,7 +28,7 @@ suite('Permissions', function () {
 
     client.eval(function () {
       Meteor.loginWithPassword('a@a.com', '123456', function () {
-        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()});
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'});
       });
     });
   });
@@ -85,7 +85,7 @@ suite('Permissions', function () {
 
     client.eval(function () {
       Meteor.loginWithPassword('a@a.com', '123456', function () {
-        var id = Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()});
+        var id = Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'});
         Events.update({_id: id}, {
           $set: {
             title: 'newtitle',
@@ -105,7 +105,7 @@ suite('Permissions', function () {
 
     client.eval(function () {
       Meteor.loginWithPassword('a@a.com', '123456', function () {
-        var id = Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()});
+        var id = Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'});
         Events.update(
           {_id: id},
           {
@@ -151,7 +151,7 @@ suite('Permissions', function () {
 
     client.eval(function () {
       Meteor.loginWithPassword('a@a.com', '123456', function () {
-        var id = Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()});
+        var id = Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'});
         Events.remove(id);
       });
     });
@@ -165,7 +165,7 @@ suite('Permissions', function () {
 
     client.eval(function () {
       Meteor.loginWithPassword('a@a.com', '123456', function () {
-        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()},
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'},
                       addedCallback);
       });
 
@@ -193,7 +193,7 @@ suite('Permissions', function () {
    */
   test('Not logged in: cannot create events', function (done, server, client) {
     client.eval(function () {
-      Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()},
+      Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'},
                     insertCallback);
 
       function insertCallback (error, id) {
@@ -214,7 +214,7 @@ suite('Permissions', function () {
 
     client.eval(function () {
       Meteor.loginWithPassword('a@a.com', '123456', function () {
-        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()},
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'},
                       addedCallback);
       });
 
@@ -250,7 +250,7 @@ suite('Permissions', function () {
 
     client.eval(function () {
       Meteor.loginWithPassword('a@a.com', '123456', function () {
-        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()},
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'},
                       addedCallback);
       });
 
