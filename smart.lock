@@ -3,7 +3,8 @@
   "dependencies": {
     "basePackages": {
       "bootstrap-datetimepicker": {},
-      "moment": {}
+      "moment": {},
+      "collection-hooks": {}
     },
     "packages": {
       "bootstrap-datetimepicker": {
@@ -15,6 +16,11 @@
         "git": "https://github.com/acreeger/meteor-moment.git",
         "tag": "v2.5.1",
         "commit": "8c9bc5d3fc96705057737cb9743d555417f6e551"
+      },
+      "collection-hooks": {
+        "git": "https://github.com/matb33/meteor-collection-hooks.git",
+        "tag": "v0.6.2",
+        "commit": "29484b2110206be93b01c6d11ce06ec9208de7bd"
       }
     }
   }

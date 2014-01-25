@@ -1,6 +1,7 @@
 {
   "packages": {
     "bootstrap-datetimepicker": {},
-    "moment": {}
+    "moment": {},
+    "collection-hooks": {}
   }
 }
