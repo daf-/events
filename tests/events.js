@@ -1,87 +1,76 @@
 var assert = require('assert');
 
-// Built off of example at
-// https://github.com/arunoda/meteor-user-authorization-test-with-laika/blob/master/tests/posts.js
-
-suite('Permissions', function() {
+suite('Permissions', function () {
   /*
    * Logged-in.
    */
-  test('logged-in users can add well-formed event', function(done, server, client) {
-    server.eval(function() {
+  test('Logged in: can add well-formed event', function (done, server, client) {
+    server.eval(function () {
       Accounts.createUser({email: 'a@a.com', password: '123456'});
       emit('done');
-    }).once('done', function() {
+    }).once('done', function () {
       server.eval(observeCollection);
     });
 
-    // User account has been created
-    function observeCollection() {
+    function observeCollection () {
       Events.find().observe({
-        added: function(doc) {
+        added: function (doc) {
           emit('added', doc);
         }
       });
     }
 
     // An event has been added -- should be the Event we added
-    server.once('added', function(doc) {
+    server.once('added', function (doc) {
       assert.equal(doc.title, 'hello');
       done();
     });
 
-    client.eval(function() {
-      Meteor.loginWithPassword('a@a.com', '123456', function() {
-        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'});
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()});
       });
     });
   });
 
-  test('logged-in users can not add ill-formed event', function(done, server, client) {
-    server.eval(function() {
+  test('Logged in: can not add ill-formed event', function (done, server, client) {
+    server.eval(function () {
       Accounts.createUser({email: 'a@a.com', password: '123456'});
-      emit('done');
-    }).once('done', function() {
-      client.eval(observeCollection);
     });
 
-    function observeCollection() {
-      Events.find().observe({
-        removed: function(doc) {
-          emit('removed', doc);
-        }
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        Events.insert({title: 'hello'}, insertCallback);
       });
-    }
 
-    client.once('removed', function(doc) {
-      assert.equal(doc.title, 'hello');
+      function insertCallback (error, id) {
+        emit('attempted insert', error, id);
+      }
+    });
+
+    client.once('attempted insert', function (error, id) {
+      assert.equal(error.message, 'Access denied [403]');
       done();
     });
-
-    client.eval(function() {
-      Meteor.loginWithPassword('a@a.com', '123456', function() {
-        Events.insert({title: 'hello'});
-      });
-    });
   });
 
-  test('logged-in users can update permitted fields', function(done, server, client) {
-    server.eval(function() {
+  test('Logged in: can update permitted fields', function (done, server, client) {
+    server.eval(function () {
       Accounts.createUser({email: 'a@a.com', password: '123456'});
       emit('done');
-    }).once('done', function() {
+    }).once('done', function () {
       client.eval(observeCollection);
     });
 
-    function observeCollection() {
+    function observeCollection () {
       Events.find().observe({
-        changed: function(newdoc, olddoc) {
+        changed: function (newdoc, olddoc) {
           emit('changed', newdoc, olddoc);
         }
       });
     }
 
-    client.once('changed', function(newdoc, olddoc) {
+    client.once('changed', function (newdoc, olddoc) {
       assert.equal(olddoc.title, 'hello');
       assert.equal(olddoc.loc, 'some place');
       assert.equal(olddoc.date, 'doesnt matter');
@@ -94,11 +83,10 @@ suite('Permissions', function() {
       done();
     });
 
-    client.eval(function() {
-      Meteor.loginWithPassword('a@a.com', '123456', function() {
-        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'});
-        var doc = Events.findOne({title: 'hello'});
-        Events.update({_id: doc._id}, {
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        var id = Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()});
+        Events.update({_id: id}, {
           $set: {
             title: 'newtitle',
             loc: 'newloc',
@@ -110,40 +98,92 @@ suite('Permissions', function() {
     });
   });
 
-  test('logged-in users can not update prohibited fields', function(done, server, client) {
-    server.eval(function() {
+  test('Logged in: can not update prohibited fields', function (done, server, client) {
+    server.eval(function () {
       Accounts.createUser({email: 'a@a.com', password: '123456'});
-      emit('done');
-    }).once('done', function() {
-      client.eval(observeCollection);
     });
 
-    function observeCollection() {
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        var id = Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()});
+        Events.update(
+          {_id: id},
+          {
+            $set: {
+              owner: 'newowner'
+            }
+          },
+          updateCallback
+        );
+      });
+
+      function updateCallback (error, numDocs) {
+        emit('attempted update', error, numDocs);
+      }
+    });
+
+    client.once('attempted update', function (error, numDocs) {
+      assert.equal(error.message, 'Access denied [403]');
+      done();
+    });
+  });
+
+  test('Logged in: can remove own event', function (done, server, client) {
+    server.eval(function () {
+      Accounts.createUser({email: 'a@a.com', password: '123456'});
+      emit('done');
+    }).once('done', function () {
+      server.eval(observeCollection);
+    });
+
+    function observeCollection () {
       Events.find().observe({
-        changed: function(olddoc, newdoc) {
-          emit('changed', olddoc, newdoc);
+        removed: function (olddoc) {
+          emit('removed', olddoc);
         }
       });
     }
 
-    // the attempted change should be changed back; the old doc's owner
-    // should be the attempted new owner
-    client.once('changed', function(olddoc, newdoc) {
-      assert.equal(olddoc.owner, 'newowner');
-
+    server.once('removed', function (olddoc) {
+      assert.equal(olddoc.title, 'hello');
       done();
     });
 
-    client.eval(function() {
-      Meteor.loginWithPassword('a@a.com', '123456', function() {
-        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'});
-        var doc = Events.findOne({title: 'hello'});
-        Events.update({_id: doc._id}, {
-          $set: {
-            owner: 'newowner'
-          }
-        });
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        var id = Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()});
+        Events.remove(id);
       });
+    });
+  });
+
+  test('Logged in: can not remove other\'s event', function (done, server, client) {
+    server.eval(function () {
+      Accounts.createUser({email: 'a@a.com', password: '123456'});
+      Accounts.createUser({email: 'b@b.com', password: '789012'});
+    });
+
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()},
+                      addedCallback);
+      });
+
+      function addedCallback (error, id) {
+        Meteor.logout();
+        Meteor.loginWithPassword('b@b.com', '789012', function () {
+          Events.remove(id, removedCallback);
+        });
+      }
+
+      function removedCallback (error) {
+        emit('attempted removal', error)
+      }
+    });
+
+    client.once('attempted removal', function (error) {
+      assert.equal(error.message, 'Access denied [403]');
+      done();
     });
   });
 
@@ -151,58 +191,82 @@ suite('Permissions', function() {
   /*
    * Not logged-in.
    */
-  test('non-logged-in users cannot create events', function(done, server, client) {
-    client.eval(function() {
-      Events.find().observe({
-        removed: function(doc) {
-          emit('remove', doc);
-        }
-      });
+  test('Not logged in: cannot create events', function (done, server, client) {
+    client.eval(function () {
+      Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()},
+                    insertCallback);
 
-      // Try to insert a (well-formed) document without being logged in.
-      // Should be removed.
-      Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'});
+      function insertCallback (error, id) {
+        emit('attempted insert', error, id);
+      }
     });
 
-    client.once('remove', function(doc) {
-      assert.equal(doc.title, 'hello');
+    client.once('attempted insert', function (error, id) {
+      assert.equal(error.message, 'Access denied [403]');
       done();
     });
   });
 
-  test('non-logged-in users can not update events', function(done, server, client) {
-    server.eval(function() {
+  test('Not logged in: can not update events', function (done, server, client) {
+    server.eval(function () {
       Accounts.createUser({email: 'a@a.com', password: '123456'});
-      emit('done');
-    }).once('done', function() {
-      client.eval(observeCollection);
     });
 
-    function observeCollection() {
-      Events.find().observe({
-        changed: function(olddoc, newdoc) {
-          emit('changed', olddoc, newdoc);
-        }
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()},
+                      addedCallback);
       });
-    }
 
-    client.once('changed', function(olddoc, newdoc) {
-      assert.equal(olddoc.title, 'newtitle');
+      // Once we add our event, log out and try to update it
+      function addedCallback (error, id) {
+        Meteor.logout();
+        Events.update(
+          {_id: id},
+          {
+            $set: {
+              title: 'newtitle'
+            }
+          },
+          updateCallback
+        );
+      }
 
+      function updateCallback (error, numDocs) {
+        emit('attempted update', error, numDocs, Events.findOne());
+      }
+    });
+
+    client.once('attempted update', function (error, numDocs) {
+      assert.equal(error.message, 'Access denied [403]');
       done();
     });
+  });
 
-    client.eval(function() {
-      Meteor.loginWithPassword('a@a.com', '123456', function() {
-        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'});
-        Meteor.logout();
-        var doc = Events.findOne({title: 'hello'});
-        Events.update({_id: doc._id}, {
-          $set: {
-            title: 'newtitle'
-          }
-        });
+  test('Not logged in: can not remove events', function (done, server, client) {
+    server.eval(function () {
+      Accounts.createUser({email: 'a@a.com', password: '123456'});
+    });
+
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter', owner: Meteor.userId()},
+                      addedCallback);
       });
+
+      function addedCallback (error, id) {
+        Meteor.logout();
+        Events.remove(id, removedCallback);
+      }
+
+      function removedCallback (error) {
+        emit('attempted removal', error);
+      }
+    });
+
+    client.once('attempted removal', function (error) {
+      assert.equal(error.message, 'Access denied [403]')
+      done();
     });
   });
 });

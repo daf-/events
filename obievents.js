@@ -127,7 +127,9 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Events.allow({
     "insert": function (userId, doc) {
-      return (userId && doc.title && doc.loc && doc.date);
+      return (userId && doc.owner
+              && doc.owner === userId
+              && doc.title && doc.loc && doc.date);
     },
 
     "update": function (userId, doc, fields, modifier) {
