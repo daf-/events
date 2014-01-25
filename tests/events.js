@@ -270,3 +270,34 @@ suite('Permissions', function () {
     });
   });
 });
+
+suite('Guests', function () {
+  test('Owner is only guest upon creation', function (done, server, client) {
+    server.eval(function () {
+      Accounts.createUser({email: 'a@a.com', password: '123456'});
+      emit('done');
+    }).once('done', function () {
+      server.eval(observeCollection);
+    });
+
+    function observeCollection () {
+      Events.find().observe({
+        added: function (newdoc) {
+          emit('added', newdoc);
+        }
+      });
+    }
+
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'});
+      });
+    });
+
+    server.once('added', function (newdoc) {
+      assert.equal(newdoc.guests.length, 1);
+      assert.equal(newdoc.guests[0], newdoc.owner);
+      done();
+    });
+  });
+});

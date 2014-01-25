@@ -2,6 +2,7 @@ Events = new Meteor.Collection('Events');
 
 Events.before.insert(function (userId, doc) {
   doc.owner = userId;
+  doc.guests = [userId];
 });
 
 if (Meteor.isClient) {
