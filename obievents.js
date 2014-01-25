@@ -43,6 +43,7 @@ if (Meteor.isClient) {
       });
       $(evt.currentTarget).closest(".form-container").slideToggle();
       $(evt.currentTarget).closest(".event-form")[0].reset();
+      return false;
     },
 
     "click .update": function (evt, templ) {
@@ -62,11 +63,13 @@ if (Meteor.isClient) {
       });
       $(evt.currentTarget).closest(".form-container").slideToggle();
       $(evt.currentTarget).closest(".event-form")[0].reset();
+      return false;
     },
 
     "click .cancel": function (evt, templ) {
       $(evt.currentTarget).closest(".form-container").slideToggle();
       $(evt.currentTarget).closest(".event-form")[0].reset();
+      return false;
     }
   });
 
@@ -112,11 +115,13 @@ if (Meteor.isClient) {
       } else {
         formContainerNode.find(".form-container").slideToggle();
       }
+      return false;
     },
 
     "click .event-container .remove-link": function (evt, templ) {
       var id = this._id;
       Events.remove({_id: id});
+      return false;
     }
   });
 }
