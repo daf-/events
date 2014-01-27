@@ -178,7 +178,7 @@ suite('Permissions', function () {
       }
 
       function removedCallback (error) {
-        emit('attempted removal', error)
+        emit('attempted removal', error);
       }
     });
 
@@ -266,7 +266,7 @@ suite('Permissions', function () {
     });
 
     client.once('attempted removal', function (error) {
-      assert.equal(error.message, 'Access denied [403]')
+      assert.equal(error.message, 'Access denied [403]');
       done();
     });
   });
