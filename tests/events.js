@@ -1,4 +1,5 @@
 var assert = require('assert');
+var _ = require('underscore');
 
 suite('Permissions', function () {
   /*
@@ -113,11 +114,11 @@ suite('Permissions', function () {
               owner: 'newowner'
             }
           },
-          updateCallback
+          updatedCallback
         );
       });
 
-      function updateCallback (error, numDocs) {
+      function updatedCallback (error, numDocs) {
         emit('attempted update', error, numDocs);
       }
     });
@@ -228,11 +229,11 @@ suite('Permissions', function () {
               title: 'newtitle'
             }
           },
-          updateCallback
+          updatedCallback
         );
       }
 
-      function updateCallback (error, numDocs) {
+      function updatedCallback (error, numDocs) {
         emit('attempted update', error, numDocs, Events.findOne());
       }
     });
@@ -297,6 +298,45 @@ suite('Guests', function () {
     server.once('added', function (newdoc) {
       assert.equal(newdoc.guests.length, 1);
       assert.equal(newdoc.guests[0], newdoc.owner);
+      done();
+    });
+  });
+
+  test('Can join any event as a guest when logged in', function (done, server, client) {
+    server.eval(function () {
+      // make global userId vars in server for both users
+      owner = Accounts.createUser({email: 'a@a.com', password: '123456'});
+      guest = Accounts.createUser({email: 'b@b.com', password: '789012'});
+      emit('done');
+    }).once('done', function () {
+      server.eval(observeCollection);
+    });
+
+    function observeCollection () {
+      Events.find().observe({
+        changed: function (newdoc, olddoc) {
+          emit('changed', newdoc, olddoc, owner, guest);
+        }
+      });
+    }
+
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'},
+                      addedCallback);
+      });
+
+      function addedCallback (error, id) {
+        Meteor.logout();
+        Meteor.loginWithPassword('b@b.com', '789012', function () {
+          Events.update({_id: id}, {$addToSet: {guests: Meteor.userId()}});
+        });
+      }
+    });
+
+    server.once('changed', function (newdoc, olddoc, owner, guest) {
+      assert.ok(_.isEqual(olddoc.guests.sort(), [owner].sort()));
+      assert.ok(_.isEqual(newdoc.guests.sort(), [owner, guest].sort()));
       done();
     });
   });

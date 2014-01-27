@@ -142,7 +142,25 @@ if (Meteor.isServer) {
     },
 
     "update": function (userId, doc, fields, modifier) {
-      return (userId && doc.owner === userId);
+      // can only modify events if logged in
+      var valid = userId;
+
+      // If not our event, can only modify guest list
+      if (doc.owner !== userId) {
+        valid = valid && _.isEqual(fields, ['guests']);
+      }
+
+      // If modifying guest list, can only add/remove ourselves
+      var permittedOps = ['$addToSet', '$pull'];
+      for (var i = 0; i < permittedOps.length; i++) {
+        var op = permittedOps[i];
+        if (modifier[op] && modifier[op]['guests']) {
+          var uid = modifier[op]['guests'];
+          valid = valid && (uid === userId);
+        }
+      }
+
+      return valid;
     },
 
     "remove": function (userId, doc) {
@@ -151,9 +169,9 @@ if (Meteor.isServer) {
   });
 
   Events.deny({
-    update: function (userId, docs, fields, modifier) {
-      // Can't change owner or id
-      return (_.contains(fields, 'owner') || _.contains(fields, '_id'));
+    update: function (userId, doc, fields, modifier) {
+      // Can't change owner
+      return _.contains(fields, 'owner');
     }
   });
 }
