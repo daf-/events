@@ -11,11 +11,23 @@
     &:hover {
       cursor: pointer;
     }
+
+    .date {
+      @media (min-width: 768px) {
+        text-align: right;
+      }
+    }
   }
 
   .description {
     display: none;
     white-space: pre-wrap;      /* Display user's formatting */
+  }
+
+  .event-controls {
+    .owner-links {
+      float: right;
+    }
   }
 }
 

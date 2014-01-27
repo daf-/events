@@ -93,6 +93,14 @@ if (Meteor.isClient) {
       return (Meteor.userId && Meteor.userId() === this.owner);
     },
 
+    amAttending: function () {
+      return _.contains(this.guests, Meteor.userId());
+    },
+
+    numGuests: function() {
+      return this.guests.length;
+    },
+
     niceDate: function () {
       return moment(this.date).format('dddd, MMM Do');
     }
@@ -103,11 +111,11 @@ if (Meteor.isClient) {
       $(evt.currentTarget).siblings(".description").slideToggle("fast");
     },
 
-    "click .event-container .edit-link": function (evt, templ) {
+    "click .event-controls .edit": function (evt, templ) {
       // If the template hasn't yet been rendered, render it.
       // Otherwise just toggle the template and event description.
       var curDoc = this;
-      var formContainerNode = $(evt.currentTarget).parent().siblings(".edit-form-container");
+      var formContainerNode = $(evt.currentTarget).parents('.event-controls').siblings(".edit-form-container");
       if (formContainerNode.find(".form-container").length === 0) {
         var fragment = Meteor.render(function () {
           // need to parse date for datetimepicker.js
@@ -122,9 +130,21 @@ if (Meteor.isClient) {
       return false;
     },
 
-    "click .event-container .remove-link": function (evt, templ) {
+    "click .event-controls .remove": function (evt, templ) {
       var id = this._id;
       Events.remove({_id: id});
+      return false;
+    },
+
+    "click .event-controls .join": function (evt, templ) {
+      var id = this._id;
+      Events.update({_id: id}, {$addToSet: {guests: Meteor.userId()}});
+      return false;
+    },
+
+    "click .event-controls .leave": function (evt, templ) {
+      var id = this._id;
+      Events.update({_id: id}, {$pull: {guests: Meteor.userId()}});
       return false;
     }
   });
