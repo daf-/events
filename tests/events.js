@@ -340,4 +340,103 @@ suite('Guests', function () {
       done();
     });
   });
+
+  test('Can not add arbitrary string to guest list', function (done, server, client) {
+    server.eval(function () {
+      Accounts.createUser({email: 'a@a.com', password: '123456'});
+      Accounts.createUser({email: 'b@b.com', password: '789012'});
+    });
+
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'},
+                      addedCallback);
+      });
+
+      function addedCallback (error, id) {
+        Meteor.logout();
+        Meteor.loginWithPassword('b@b.com', '789012', function () {
+          Events.update({_id: id},
+                        {$addToSet: {guests: 'fake_id'}},
+                        updatedCallback);
+        });
+      }
+
+      function updatedCallback (error, numDocs) {
+        emit('attempted update', error);
+      }
+    });
+
+    client.once('attempted update', function (error) {
+      assert.equal(error.message, 'Access denied [403]');
+      done();
+    });
+  });
+
+  test('Can remove self from guest list', function (done, server, client) {
+    server.eval(function () {
+      Accounts.createUser({email: 'a@a.com', password: '123456'});
+      emit('done');
+    }).once('done', function () {
+      server.eval(observeCollection);
+    });
+
+    function observeCollection () {
+      Events.find().observe({
+        changed: function (newdoc, olddoc) {
+          emit('changed', newdoc, olddoc);
+        }
+      });
+    }
+
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'},
+                      addedCallback);
+      });
+
+      function addedCallback (error, id) {
+        Events.update({_id: id}, {$pull: {guests: Meteor.userId()}});
+      }
+    });
+
+    server.once('changed', function (newdoc, olddoc) {
+      assert.ok(_.isEqual(olddoc.guests, [olddoc.owner]));
+      assert.ok(_.isEqual(newdoc.guests, []));
+      done();
+    });
+  });
+
+  test('Can not remove other user from guest list', function (done, server, client) {
+    server.eval(function () {
+      Accounts.createUser({email: 'a@a.com', password: '123456'});
+      Accounts.createUser({email: 'b@b.com', password: '789012'});
+    });
+
+    client.eval(function () {
+      Meteor.loginWithPassword('a@a.com', '123456', function () {
+        Events.insert({title: 'hello', loc: 'some place', date: 'doesnt matter'},
+                      addedCallback);
+      });
+
+      function addedCallback (error, id) {
+        Meteor.logout();
+        Meteor.loginWithPassword('b@b.com', '789012', function () {
+          var doc = Events.findOne(id);
+          Events.update({_id: id},
+                        {$pull: {guests: doc.owner}},
+                        updatedCallback);
+        });
+      }
+
+      function updatedCallback (error, numDocs) {
+        emit('attempted update', error);
+      }
+    });
+
+    client.once('attempted update', function (error) {
+      assert.equal(error.message, 'Access denied [403]');
+      done();
+    });
+  });
 });
