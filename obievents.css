@@ -7,10 +7,15 @@
   overflow: auto; }
   .event-container .title:hover {
     cursor: pointer; }
+  @media (min-width: 768px) {
+    .event-container .title .date {
+      text-align: right; } }
   .event-container .description {
     display: none;
     white-space: pre-wrap;
     /* Display user's formatting */ }
+  .event-container .event-controls .owner-links {
+    float: right; }
 
 /* Form stuff */
 .form-container {

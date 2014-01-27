@@ -91,19 +91,28 @@
   <div class="event-container row-fluid">
     <div class="span12"> <!-- container column -->
       <div class="title row-fluid">
-        <div class="span10"><strong>{{title}} @ {{loc}}</strong></div>
-        <div class="span2"><em>{{niceDate}}</em></div>
+        <div class="span6"><strong>{{title}} @ {{loc}}</strong> [{{numGuests}} going]</div>
+        <div class="date span6"><em>{{niceDate}}</em></div>
       </div>
       {{#if desc}}
       <div class="description row-fluid"><p>{{desc}}</p></div>
       {{/if}}
-      {{#if amOwner}}
-      <div class="event-links row-fluid">
-        <a class="edit-link">Edit</a>
-        <a class="remove-link">Remove</a>
+      <div class="event-controls row-fluid">
+        <span class="user-links">
+          {{#if amAttending}}
+          <a class="leave">Leave</a>
+          {{else}}
+          <a class="join">Join</a>
+          {{/if}}
+        </span>
+        {{#if amOwner}}
+        <span class="owner-links">
+          <a class="remove">Remove</a>
+          <a class="edit">Edit</a>
+        </span>
+        {{/if}}
       </div>
       <div class="edit-form-container row-fluid"></div>
-      {{/if}}
     </div> <!-- end container column -->
   </div>
   {{/each}}
