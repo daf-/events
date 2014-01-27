@@ -45,11 +45,11 @@ suite('Permissions', function () {
       });
 
       function insertCallback (error, id) {
-        emit('attempted insert', error, id);
+        emit('attempted insert', error);
       }
     });
 
-    client.once('attempted insert', function (error, id) {
+    client.once('attempted insert', function (error) {
       assert.equal(error.message, 'Access denied [403]');
       done();
     });
@@ -119,11 +119,11 @@ suite('Permissions', function () {
       });
 
       function updatedCallback (error, numDocs) {
-        emit('attempted update', error, numDocs);
+        emit('attempted update', error);
       }
     });
 
-    client.once('attempted update', function (error, numDocs) {
+    client.once('attempted update', function (error) {
       assert.equal(error.message, 'Access denied [403]');
       done();
     });
@@ -198,11 +198,11 @@ suite('Permissions', function () {
                     insertCallback);
 
       function insertCallback (error, id) {
-        emit('attempted insert', error, id);
+        emit('attempted insert', error);
       }
     });
 
-    client.once('attempted insert', function (error, id) {
+    client.once('attempted insert', function (error) {
       assert.equal(error.message, 'Access denied [403]');
       done();
     });
@@ -234,11 +234,11 @@ suite('Permissions', function () {
       }
 
       function updatedCallback (error, numDocs) {
-        emit('attempted update', error, numDocs, Events.findOne());
+        emit('attempted update', error);
       }
     });
 
-    client.once('attempted update', function (error, numDocs) {
+    client.once('attempted update', function (error) {
       assert.equal(error.message, 'Access denied [403]');
       done();
     });
